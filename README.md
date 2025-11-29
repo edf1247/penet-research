@@ -11,7 +11,18 @@ ToDo:
 
 ## Text classification
 
+Implemented a simple logistic regression model for classification using patient data.
+
 
 ## Combining the Two
 
-Take the weighted average of the two models predictions, and use that as the final prediction
+Instead of taking a weighted sum, we took the following approach:
+- Train the PeNet model and the text classifier on the training data alone (set a validation set and test set aside)
+- Get the model predictions for the validation set, and train a logistic regression model on those predicted probabilities
+- Then, have the PeNET model and text classifier make predictions on the test data. 
+- Feed those predictions into the ensemble, having it make predictions based on that data.
+
+
+## Results
+
+The ensemble reported an AUROC of 95.8% on the test set, compared to the 84% AUROC of the PENet model. This is over a 14% increase in model performance.
