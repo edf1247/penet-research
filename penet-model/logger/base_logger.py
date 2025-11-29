@@ -72,10 +72,20 @@ class BaseLogger(object):
             ax.set_ylim([0.0, 1.05])
             ax.set_xlim([0.0, 1.0])
 
+            # Render figure to an RGB array compatible with newer Matplotlib backends.
             fig.canvas.draw()
+            try:
+                # Newer Matplotlib: use buffer_rgba
+                buffer = np.asarray(fig.canvas.buffer_rgba())
+                # H x W x 4 (RGBA) -> 3 x H x W (RGB)
+                if buffer.shape[-1] == 4:
+                    buffer = buffer[..., :3]
+                curve_img = buffer.transpose(2, 0, 1)
+            except Exception:
+                # Fallback for older Matplotlib that still supports tostring_rgb
+                curve_img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+                curve_img = curve_img.reshape((3,) + fig.canvas.get_width_height()[::-1])
 
-            curve_img = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-            curve_img = curve_img.reshape((3,) + fig.canvas.get_width_height()[::-1])
             self.summary_writer.add_image(name.replace('_', '/'), curve_img, global_step=self.global_step)
 
     def visualize(self, inputs, cls_logits, targets_dict, phase, unique_id=None):
@@ -154,3 +164,4 @@ class BaseLogger(object):
     def end_epoch(self, metrics, curves):
         """Log info for end of an epoch. Save model parameters and update learning rate."""
         raise NotImplementedError
+

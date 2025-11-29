@@ -1,32 +1,3 @@
-"""Optuna hyperparameter tuning for PENet / PENetClassifier.
-
-Usage example (PowerShell):
-
-    # Basic run optimizing validation AUROC over 20 trials, 3 epochs each
-    python tune_optuna.py \
-        --data_dir /users/edfarber/scratch/dataset/multimodalpulmonaryembolismdataset/0/ \
-        --dataset pe \
-        --model PENetClassifier \
-        --name optuna_pe \
-        --num_slices 32 \
-        --batch_size 6 \
-        --n_trials 20 \
-        --epochs_per_trial 3 \
-        --metric val_AUROC
-
-Notes:
-    - Python version in current environment.yml is 3.6. Modern Optuna (>=3.x) requires >=3.8.
-      If import fails, create a new environment with Python>=3.8 and install `optuna`.
-    - The search space below is intentionally conservative to keep trials fast.
-    - Metric direction inferred automatically (loss minimized, AUROC maximized).
-    - Pruning can be enabled with --prune; it will prune after the first evaluation epoch.
-
-Outputs:
-    - Each trial uses a unique experiment name: <base_name>_trial<NUM>.
-    - Individual trial args JSON and TensorBoard logs stored under each trial's generated save_dir.
-    - Final study summary printed at end. Best params dumped to best_params.json in CWD.
-"""
-
 import json
 import os
 import sys
@@ -80,6 +51,11 @@ def objective(trial, base_cli_args, study_cfg):
     if 'const' in study_cfg:
         args.num_slices = study_cfg['const']['num_slices']
         args.batch_size = study_cfg['const']['batch_size']
+
+    # If optimizing AUROC but no aggregator specified, default to 'max' so AUROC is computed.
+    # Without an aggregator, evaluator only reports loss and AUROC stays missing (-> -inf fallback).
+    if study_cfg.get('metric') == 'val_AUROC' and (not getattr(args, 'agg_method', None)):
+        args.agg_method = 'max'
 
     # Overwrite experiment name for uniqueness per trial and rebuild save_dir
     import datetime
@@ -183,6 +159,8 @@ def objective(trial, base_cli_args, study_cfg):
     # Compute total iterations = epochs * ceil(dataset_len / batch_size)
     iters_per_epoch = math.ceil(len(train_loader.dataset) / args.batch_size)
     args.lr_decay_step = iters_per_epoch * args.num_epochs
+    # Scale warmup to a reasonable fraction of total iters so short trials can learn
+    args.lr_warmup_steps = max(10, min(1000, int(0.1 * args.lr_decay_step)))
     lr_scheduler = util.get_scheduler(optimizer, args)
 
     cls_loss_fn = util.get_loss_fn(is_classification=True, dataset=args.dataset, size_average=False)

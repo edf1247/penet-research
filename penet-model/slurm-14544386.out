@@ -1,0 +1,11 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 14544386
+##  Job Name : train.sh
+##  Nodelist : gpu2010
+##      CPUs : 1
+##  Mem/Node : 65536 MB
+## Directory : /oscar/home/edfarber/penet-research/penet-model
+##   Job Started : Wed Nov 26 05:11:36 PM EST 2025
+###############################################################################
+[start of epoch 1]
+slurmstepd: error: *** JOB 14544386 ON gpu2010 CANCELLED AT 2025-11-26T17:12:19 ***

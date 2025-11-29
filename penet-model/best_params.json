@@ -1,0 +1,16 @@
+{
+  "metric": "val_AUROC",
+  "value": 0.8247207743857037,
+  "params": {
+    "optimizer": "sgd",
+    "learning_rate": 0.0010133012268359336,
+    "weight_decay": 1.6259849010120848e-05,
+    "sgd_momentum": 0.9400041387184556,
+    "sgd_dampening": 0.29321447220485586,
+    "dropout_prob": 0.18934208074771436,
+    "fine_tune": true,
+    "fine_tuning_lr": 6.920584623067522e-06,
+    "fine_tuning_boundary": "encoders.1",
+    "abnormal_prob": 0.4823431111983377
+  }
+}
