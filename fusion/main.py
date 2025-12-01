@@ -35,9 +35,15 @@ def train_classifier(args):
     y_train = training_df["label"].to_numpy()
 
     clf = LogisticRegression().fit(x_train, y_train)
-    return clf
 
-def test_classifier(args, clf):
+    y_prob_val = clf.predict_proba(x_train)[:, 1]
+    fpr, tpr, thresholds = metrics.roc_curve(y_train, y_prob_val)
+    optimal_idx = (tpr - fpr).argmax()
+    optimal_threshold = thresholds[optimal_idx]
+
+    return clf, optimal_threshold
+
+def test_classifier(args, clf, optimal_threshold):
     try:
         penet_test = pd.read_pickle(args.penet_test)
     except:
@@ -63,11 +69,8 @@ def test_classifier(args, clf):
 
     print(f"AUC-ROC: {metrics.roc_auc_score(y_test, y_prob):.3f}")
     print(f"Accuracy with default threshold: {accuracy}")
-    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_prob)
-    optimal_idx = (tpr - fpr).argmax()
-    optimal_threshold = thresholds[optimal_idx]
     y_pred_optimal = (y_prob >= optimal_threshold).astype(int)
-    print(f"Accuracy with optimal threshold ({optimal_threshold:.3f}): {metrics.accuracy_score(y_test, y_pred_optimal)}")
+    print(f"Accuracy with validation-derived optimal threshold ({optimal_threshold:.3f}): {metrics.accuracy_score(y_test, y_pred_optimal)}")
     create_roc_plot(y_test, y_prob)
 
 def create_roc_plot(y_test, y_prob):
@@ -89,5 +92,5 @@ if __name__ == "__main__":
     if len(sys.argv) <= 1:
         parser.print_help()
     else:
-        clf = train_classifier(args)
-        test_classifier(args, clf)
+        clf, optimal_threshold = train_classifier(args)
+        test_classifier(args, clf, optimal_threshold)
