@@ -28,3 +28,9 @@ Instead of taking a weighted sum, we took the following approach:
 ## Results
 
 The ensemble reported an AUROC of 95.8% on the test set, compared to the 84% AUROC of the PENet model. This is over a 14% increase in model performance.
+
+With the new text classifier using xgboost, we get these results:
+
+AUC-ROC: 0.968
+Accuracy with default threshold: 0.8827160493827161
+Accuracy with optimal threshold (0.230): 0.9197530864197531
