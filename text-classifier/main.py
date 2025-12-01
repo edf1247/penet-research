@@ -3,6 +3,8 @@ from sklearn.preprocessing import StandardScaler
 import sklearn.metrics as metrics
 import argparse
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
+from sklearn.model_selection import cross_val_score
 
 pd.options.mode.chained_assignment = None
 

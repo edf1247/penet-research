@@ -4,6 +4,7 @@ import sklearn.metrics as metrics
 import argparse
 from sklearn.linear_model import LogisticRegression
 import sys
+from sklearn.metrics import precision_recall_curve
 
 def create_parser():
     parser = argparse.ArgumentParser(prog="Fusion model")
@@ -62,6 +63,11 @@ def test_classifier(args, clf):
 
     print(f"AUC-ROC: {metrics.roc_auc_score(y_test, y_prob):.3f}")
     print(f"Accuracy with default threshold: {accuracy}")
+    fpr, tpr, thresholds = metrics.roc_curve(y_test, y_prob)
+    optimal_idx = (tpr - fpr).argmax()
+    optimal_threshold = thresholds[optimal_idx]
+    y_pred_optimal = (y_prob >= optimal_threshold).astype(int)
+    print(f"Accuracy with optimal threshold ({optimal_threshold:.3f}): {metrics.accuracy_score(y_test, y_pred_optimal)}")
     create_roc_plot(y_test, y_prob)
 
 def create_roc_plot(y_test, y_prob):
@@ -75,7 +81,7 @@ def create_roc_plot(y_test, y_prob):
     plt.ylim([0, 1])
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
-    plt.show()
+    plt.savefig("./auroc.png")
 
 if __name__ == "__main__":
     parser = create_parser()
