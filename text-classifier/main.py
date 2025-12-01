@@ -10,7 +10,6 @@ pd.options.mode.chained_assignment = None
 def create_parser():
     parser = argparse.ArgumentParser(prog="Text Classifier")
     parser.add_argument("-d", help="Path to csv data")
-    parser.add_argument("-p", help="Phase: (val, test)")
     return parser
 
 def create_dataframe(args):
@@ -65,7 +64,5 @@ if __name__ == "__main__":
     args = create_parser().parse_args()
     dataframe = create_dataframe(args)
     clf, scaler = train(dataframe)
-    if(args.p == "val"):
-        validation(clf, scaler, dataframe)
-    elif(args.p == "test"):
-        test(clf, scaler, dataframe)
+    validation(clf, scaler, dataframe)
+    test(clf, scaler, dataframe)
