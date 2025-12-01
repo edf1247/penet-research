@@ -1,13 +1,15 @@
 # penet-research
 Repo for penet research
 
-## PeNet Model
+## Usage
+1. Run the PENet model on the validation and test sets
+2. Run the text classifier on the validation and test sets
+3. Pass the validation and test predictions for both models to the fusion model
+
+## PENet Model
 Model from [this repo](https://github.com/marshuang80/penet)
 
 Added Optuna integration for hyperparameter optimization. 
-ToDo:
-- compare optimized performance to penet_best
-- Add XGBoost integration
 
 ## Text classification
 
