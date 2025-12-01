@@ -2,9 +2,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import sklearn.metrics as metrics
 import argparse
-from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import train_test_split
 
 pd.options.mode.chained_assignment = None
 
@@ -25,8 +24,19 @@ def train(df):
     y_train = train_df["label"].to_numpy()
     scaler = StandardScaler()
     x_train = scaler.fit_transform(x_train)
-    clf = LogisticRegression(random_state=42, solver="liblinear", penalty="l1", C=0.03, max_iter=500)
-    clf.fit(x_train, y_train)
+    x_train, x_train_val, y_train, y_train_val = train_test_split(x_train, y_train, test_size=0.25, random_state=1)
+    clf = XGBClassifier(
+        n_estimators=100,
+        max_depth=5,
+        learning_rate=0.1,
+        random_state=123,
+        eval_metric='auc',
+        early_stopping_rounds=10,
+        alpha=10,
+        objective="binary:logistic",
+        colsample_bytree=0.3
+    )
+    clf.fit(x_train, y_train, eval_set=[(x_train_val, y_train_val)], verbose=True)
     return clf, scaler
 
 def validation(clf, scaler, df):

@@ -31,8 +31,8 @@ The ensemble reported an AUROC of 95.8% on the test set, compared to the 84% AUR
 
 With the new text classifier using xgboost, we get these results:
 
-AUC-ROC: 0.968
-Accuracy with default threshold: 0.8827160493827161
-Accuracy with optimal threshold (0.230): 0.9197530864197531
+AUC-ROC: 0.969
+Accuracy with default threshold: 0.9074074074074074
+Accuracy with optimal threshold (0.477): 0.9197530864197531
 
 Notably, the accuracy with the optimal threshold is significantly higher than with the previous regressor.
