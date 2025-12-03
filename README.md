@@ -2,9 +2,12 @@
 Repo for penet research
 
 ## Usage
+1. Download the dataset and best PENet model weights from the PENet repo
+1. Preprocess the csv data by using the script found in the text-classification folder
+	- You will need to change the data path to the path where the csvs are stored
 1. Run the PENet model on the validation and test sets
-2. Run the text classifier
-3. Pass the validation and test predictions for both models to the fusion model
+1. Run the text classifier
+1. Pass the validation and test predictions for both models to the fusion model
 
 ## PENet Model
 Model from [this repo](https://github.com/marshuang80/penet)
