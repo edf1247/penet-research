@@ -33,4 +33,4 @@ We implemented ensemble stacking:
 |---|---|---|
 | 0.968 | 0.9012345679012346 | 0.9135802469135802 |
 
-The PENet model had an AUROC of 0.84 on the test set, while our ensemble has an AUROC of 0.968. This is a nearly 13 point increase in the models abilitiy to rank positive cases higher than negative cases. Also, the model's accuracy of 91% makes it extrememly applicable in a clinical setting. 
+The PENet model had an AUROC of 0.84 on the test set, while our ensemble has an AUROC of 0.968. This is a nearly 13 point increase in the models abilitiy to rank positive cases higher than negative cases. Also, the model's accuracy of 91% makes it easily applicable to a clinical setting. 
